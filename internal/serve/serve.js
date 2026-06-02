@@ -24,11 +24,6 @@ let fetchContent = (u) => {
     }
 }
 
-let fixLayout = () => {
-    let content = document.querySelector('.section-content')
-    if (content) content.style.paddingTop = '0.75rem'
-}
-
 let updateMenu = (n) => {
     fetch("/markdown/menu")
         .then(r => r.text())
@@ -71,7 +66,19 @@ let injectHeader = () => {
             if (!header) return
             docPreview.parentNode.insertBefore(header, docPreview)
 
-            // wire cosmetic tab toggle
+            // wire cosmetic tab toggle + indicator position
+            let tabList = document.querySelector('[data-preview-tablist]')
+            let setIndicator = () => {
+                if (!tabList) return
+                let selected = tabList.querySelector('.hds-tabs__tab--is-selected .hds-tabs__tab-button')
+                if (!selected) return
+                let listRect = tabList.getBoundingClientRect()
+                let btnRect = selected.getBoundingClientRect()
+                tabList.style.setProperty('--indicator-left-pos', (btnRect.left - listRect.left) + 'px')
+                tabList.style.setProperty('--indicator-width', btnRect.width + 'px')
+            }
+            requestAnimationFrame(setIndicator)
+
             let tabs = document.querySelector('[data-preview-tabs]')
             if (tabs) {
                 tabs.querySelectorAll('.hds-tabs__tab-button').forEach(btn => {
@@ -81,6 +88,7 @@ let injectHeader = () => {
                         tabs.querySelectorAll('.hds-tabs__tab-button').forEach(b => b.setAttribute('aria-selected', 'false'))
                         btn.closest('.hds-tabs__tab').classList.add('hds-tabs__tab--is-selected')
                         btn.setAttribute('aria-selected', 'true')
+                        setIndicator()
                     })
                 })
             }
@@ -109,7 +117,6 @@ let menu = new MutationObserver((mutations, ob) => {
             let node = mutation.addedNodes[i]
             if (node.nodeName === "DIV" && node.getAttribute("class") === "provider-docs-menu") {
                 updateMenu(node)
-                fixLayout()
                 ob.disconnect()
             }
         }
