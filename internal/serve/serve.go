@@ -1,3 +1,7 @@
+// Ported from github.com/wjam/terraform-plugin-docs (commit c488aaf, Feb 2021)
+// and github.com/dominik-lekse/terraform-plugin-docs (branch serve-docs, Aug 2022),
+// rebased onto v0.25.0 with bug fixes and menu rendering improvements.
+
 package serve
 
 import (
@@ -28,6 +32,7 @@ var layout = regexp.MustCompile("(?ims)---\\n(?:.*\\n)?layout:([^\\n]*).*---\\n"
 type Menu struct {
 	Index     *Page
 	Data      []*Page
+	Guides    []*Page
 	Resources []*Page
 }
 
@@ -133,6 +138,8 @@ func generateMenu(providerName string) (*Menu, error) {
 		if path == "docs/index.md" {
 			page.Name = extractLayout(page.Content)
 			menu.Index = page
+		} else if strings.HasPrefix(path, "docs/guides/") {
+			menu.Guides = append(menu.Guides, page)
 		} else if strings.HasPrefix(path, "docs/resources/") {
 			menu.Resources = append(menu.Resources, page)
 		} else if strings.HasPrefix(path, "docs/data-sources/") {
@@ -242,7 +249,11 @@ func getSidebarMenu(w http.ResponseWriter, providerName string) error {
 
 	w.Header().Set("Content-Type", "text/html")
 
-	t, err := template.New("menu").Parse(menuTemplate)
+	t, err := template.New("menu").Funcs(template.FuncMap{
+		"wbr": func(s string) template.HTML {
+			return template.HTML(strings.ReplaceAll(s, "_", "_<wbr>"))
+		},
+	}).Parse(menuTemplate)
 	if err != nil {
 		return err
 	}
