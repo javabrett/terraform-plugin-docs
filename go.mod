@@ -4,6 +4,7 @@ go 1.25.8
 
 require (
 	github.com/Kunde21/markdownfmt/v3 v3.1.0
+	github.com/adrg/frontmatter v0.2.0
 	github.com/bmatcuk/doublestar/v4 v4.10.0
 	github.com/google/go-cmp v0.7.0
 	github.com/hashicorp/cli v1.1.7
@@ -18,6 +19,7 @@ require (
 	github.com/zclconf/go-cty v1.18.1
 	go.abhg.dev/goldmark/frontmatter v0.2.0
 	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df
+	golang.org/x/net v0.52.0
 	golang.org/x/text v0.36.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -49,7 +51,7 @@ require (
 	github.com/posener/complete v1.2.3 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
-	golang.org/x/crypto v0.45.0 // indirect
+	golang.org/x/crypto v0.49.0 // indirect
 	golang.org/x/mod v0.35.0 // indirect
 	golang.org/x/sys v0.42.0 // indirect
 	golang.org/x/tools v0.43.0 // indirect

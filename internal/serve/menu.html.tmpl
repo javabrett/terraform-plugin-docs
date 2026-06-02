@@ -1,0 +1,59 @@
+<div class="provider-docs-menu-title">Preview documentation</div>
+<div class="provider-docs-menu-content">
+    <ul class="provider-docs-menu-list menu-list">
+        <div>
+            <li class="menu-list-link"><a onclick="fetchContent('{{.Index.Path}}')" class="active">{{ if .Index.Title }}{{.Index.Title}}{{else}}{{.Index.Name}}{{end}}</a></li>
+        </div>
+        {{ if .Guides }}
+            <div class="menu-list-category-wrapper expanded"><div>
+                    <li class="menu-list-category">
+                        <a class="menu-list-category-link">
+                            <i class="fa fa-angle-down"></i>
+                            <span class="menu-list-category-link-title">Guides</span>
+                        </a>
+                        <ul class="menu-list">
+                            {{range .Guides}}
+                                <div><li class="menu-list-link">
+                                        <a onclick="fetchContent('{{.Path}}')">
+                                            {{ if .Title }}{{.Title}}{{else}}{{.Name}}{{end}}
+                                        </a>
+                                    </li></div>
+                            {{end}}
+                        </ul></li></div></div>
+        {{ end }}
+        {{ if .Resources }}
+            <div class="menu-list-category-wrapper expanded"><div>
+                    <li class="menu-list-category">
+                        <a class="menu-list-category-link">
+                            <i class="fa fa-angle-down"></i>
+                            <span class="menu-list-category-link-title">Resources</span>
+                        </a>
+                        <ul class="menu-list">
+                            {{range .Resources}}
+                                <div><li class="menu-list-link">
+                                        <a onclick="fetchContent('{{.Path}}')">
+                                            {{.ShortProviderName}}_{{.Name}}
+                                        </a>
+                                    </li></div>
+                            {{end}}
+                        </ul></li></div></div>
+        {{ end }}
+        {{ if .Data }}
+            <div class="menu-list-category-wrapper expanded"><div>
+                    <li class="menu-list-category">
+                        <a class="menu-list-category-link">
+                            <i class="fa fa-angle-down"></i>
+                            <span class="menu-list-category-link-title">Data Sources</span>
+                        </a>
+                        <ul class="menu-list">
+                            {{range .Data}}
+                                <div><li class="menu-list-link">
+                                        <a onclick="fetchContent('{{.Path}}')">
+                                            {{.ShortProviderName}}_{{.Name}}
+                                        </a>
+                                    </li></div>
+                            {{end}}
+                        </ul></li></div></div>
+        {{ end }}
+    </ul>
+</div>
