@@ -1,0 +1,153 @@
+<div class="container is-widescreen" data-preview-header>
+  <header class="hds-page-header provider-nav-header detail-page-header">
+    <nav class="hds-breadcrumb hds-breadcrumb--items-can-wrap" aria-label="Provider">
+      <ol class="hds-breadcrumb__list">
+        <li class="hds-breadcrumb__item">
+          <a class="hds-breadcrumb__link" href="/browse/providers">
+            <span class="hds-breadcrumb__text">Providers</span>
+          </a>
+        </li>
+        <li class="hds-breadcrumb__item">
+          <a class="hds-breadcrumb__link" href="/namespaces/{{.Namespace}}">
+            <span class="hds-breadcrumb__text">{{.Namespace}}</span>
+          </a>
+        </li>
+        <li class="hds-breadcrumb__item">
+          <a class="hds-breadcrumb__link" href="/providers/{{.Namespace}}/{{.Name}}">
+            <span class="hds-breadcrumb__text">{{.Name}}</span>
+          </a>
+        </li>
+        <li class="hds-breadcrumb__item">
+          <div class="hds-breadcrumb__current">
+            <span class="hds-breadcrumb__text">v{{.Version}}</span>
+          </div>
+        </li>
+      </ol>
+    </nav>
+    <div class="hds-page-header__body">
+      <div class="hds-page-header__main">
+        <div class="hds-page-header__content">
+          <div class="hds-page-header__title-wrapper">
+            <h1 class="hds-text hds-typography-display-500 hds-font-weight-bold hds-foreground-strong hds-page-header__title">
+              <span class="hds-layout-flex hds-layout-flex--direction-row hds-layout-flex--align-items-center hds-layout-flex--row-gap-16 hds-layout-flex--column-gap-16 hds-layout-flex--is-inline provider-nav-title-row">
+                <span class="hds-layout-flex hds-layout-flex--direction-row hds-layout-flex--justify-content-center hds-layout-flex--align-items-center hds-layout-flex--is-inline provider-nav-title-logo" style="background:#f8f5ff;border-radius:8px;flex-shrink:0;height:3.25rem;width:3.25rem;">
+                  <span class="provider-logo">
+                    {{if .LogoURL}}<img class="github-image" src="{{.LogoURL}}" alt="{{.Namespace}}" style="width:40px;height:40px;border-radius:8px;display:block;max-height:1.625rem;max-width:1.625rem;">{{end}}
+                  </span>
+                </span>
+                <span>{{.Name}}</span>
+              </span>
+            </h1>
+          </div>
+          <div class="hds-page-header__metadata">
+            <p class="hds-text hds-typography-body-200 hds-font-weight-regular hds-foreground-faint hds-page-header__subtitle">
+              {{.Namespace}}/{{.Name}}
+            </p>
+            <div class="hds-layout-flex hds-layout-flex--direction-column hds-layout-flex--row-gap-16 hds-layout-flex--column-gap-16 details-metadata provider-nav-metadata detail-page-metadata">
+              <div class="hds-layout-flex hds-layout-flex--direction-row hds-layout-flex--align-items-center hds-layout-flex--row-gap-24 hds-layout-flex--column-gap-24 hds-layout-flex--has-wrapping provider-nav-header-metadata detail-page-metadata-row" style="flex-wrap:wrap;">
+                {{if .Downloads}}
+                <div class="details-metadata-item provider-nav-detail provider-nav-metric provider-nav-detail-inline">
+                  <div class="hds-layout-flex hds-layout-flex--direction-row hds-layout-flex--align-items-center hds-layout-flex--row-gap-4 hds-layout-flex--column-gap-4 details-metadata-item-inner">
+                    <span class="hds-text hds-typography-body-100 hds-font-weight-regular hds-foreground-faint">Downloads:</span>
+                    <span class="hds-text hds-typography-body-100 hds-font-weight-semibold details-metadata-value"><span>{{.Downloads}}</span></span>
+                  </div>
+                </div>
+                <div class="details-metadata-item provider-nav-detail provider-nav-metric provider-nav-detail-inline">
+                  <div class="hds-layout-flex hds-layout-flex--direction-row hds-layout-flex--align-items-center hds-layout-flex--row-gap-4 hds-layout-flex--column-gap-4 details-metadata-item-inner">
+                    <span class="hds-text hds-typography-body-100 hds-font-weight-regular hds-foreground-faint">This week:</span>
+                    <span class="hds-text hds-typography-body-100 hds-font-weight-semibold details-metadata-value"><span>??</span></span>
+                  </div>
+                </div>
+                {{end}}
+                <div class="details-metadata-item provider-nav-detail provider-nav-metric provider-nav-detail-inline">
+                  <div class="hds-layout-flex hds-layout-flex--direction-row hds-layout-flex--align-items-center hds-layout-flex--row-gap-4 hds-layout-flex--column-gap-4 details-metadata-item-inner">
+                    <span class="hds-text hds-typography-body-100 hds-font-weight-regular hds-foreground-faint">Versions:</span>
+                    <span class="hds-text hds-typography-body-100 hds-font-weight-semibold details-metadata-value"><span>{{.VersionCount}}</span></span>
+                  </div>
+                </div>
+                {{if .Source}}
+                <div class="details-metadata-item provider-nav-detail provider-nav-detail-inline">
+                  <div class="hds-layout-flex hds-layout-flex--direction-row hds-layout-flex--align-items-center hds-layout-flex--row-gap-4 hds-layout-flex--column-gap-4 details-metadata-item-inner">
+                    <span class="hds-text hds-typography-body-100 hds-font-weight-regular hds-foreground-faint">Source code:</span>
+                    <span class="hds-text hds-typography-body-100 hds-font-weight-semibold details-metadata-value">
+                      <a href="{{.Source}}" target="_blank" rel="noopener noreferrer" class="provider-nav-inline-link details-metadata-link">{{.SourceDisplay}}</a>
+                    </span>
+                  </div>
+                </div>
+                {{end}}
+                {{if .PublishedAt}}
+                <div class="details-metadata-item provider-nav-detail provider-nav-detail-inline">
+                  <div class="hds-layout-flex hds-layout-flex--direction-row hds-layout-flex--align-items-center hds-layout-flex--row-gap-4 hds-layout-flex--column-gap-4 details-metadata-item-inner">
+                    <span class="hds-text hds-typography-body-100 hds-font-weight-regular hds-foreground-faint">Published:</span>
+                    <span class="hds-text hds-typography-body-100 hds-font-weight-semibold details-metadata-value">{{.PublishedAt}}</span>
+                  </div>
+                </div>
+                {{end}}
+                <div class="details-metadata-item provider-nav-detail provider-nav-detail-inline">
+                  <div class="hds-layout-flex hds-layout-flex--direction-row hds-layout-flex--align-items-center hds-layout-flex--row-gap-4 hds-layout-flex--column-gap-4 details-metadata-item-inner">
+                    <span class="hds-text hds-typography-body-100 hds-font-weight-regular hds-foreground-faint">Published by:</span>
+                    <span class="hds-text hds-typography-body-100 hds-font-weight-semibold details-metadata-value">
+                      <a class="provider-nav-inline-link details-metadata-link" href="/namespaces/{{.Namespace}}">{{.Namespace}}</a>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="hds-layout-flex hds-layout-flex--direction-row hds-layout-flex--row-gap-8 hds-layout-flex--column-gap-8 provider-nav-categories">
+                <span class="hds-tag hds-tag--color-secondary">
+                  <a class="hds-tag__link" href="/browse/providers?category=ci-cd" tabindex="0">
+                    <span class="hds-text hds-typography-body-100 hds-font-weight-medium hds-tag__text-container">Continuous Integration/Deployment (CI/CD)</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hds-page-header__actions" style="align-self:flex-start;">
+        <div class="hds-layout-flex hds-layout-flex--direction-row hds-layout-flex--justify-content-center hds-layout-flex--align-items-center hds-layout-flex--row-gap-0 hds-layout-flex--column-gap-0 provider-nav-version-select details-version-select">
+          <div class="hds-form-field--layout-vertical">
+            <div class="hds-form-field__control">
+              <div class="hds-form-super-select hds-form-super-select-single hds-form-super-select--dropdown-content-auto-width" style="--hds-form-super-select-dropdown-max-width: 14rem;">
+                <div class="ember-basic-dropdown">
+                  <div class="ember-basic-dropdown-trigger ember-basic-dropdown-trigger--in-place ember-power-select-trigger details-version-select-trigger details-version-select-field provider-nav-version-select-field" tabindex="0" aria-label="Provider version" role="combobox" aria-expanded="false" aria-disabled="false">
+                    <span class="ember-power-select-selected-item">
+                      <span class="hds-text hds-typography-body-200 hds-font-weight-regular">Version {{.Version}} (latest)</span>
+                    </span>
+                    <span class="ember-power-select-status-icon"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{if .Source}}
+        <a target="_blank" rel="noopener noreferrer" class="hds-button hds-button--color-secondary hds-button--size-medium" href="{{.Source}}">
+          <span class="hds-button__icon">
+            <svg class="hds-icon hds-icon-external-link" aria-hidden="true" fill="currentColor" width="100%" height="100%" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+              <use href="#flight-external-link-16"></use>
+            </svg>
+          </span>
+          <span class="hds-button__text">View Source</span>
+        </a>
+        {{end}}
+      </div>
+    </div>
+  </header>
+  <div class="provider-nav-tabs-section detail-page-tabs-section">
+    <div class="hds-layout-flex hds-layout-flex--direction-row hds-layout-flex--align-items-center hds-layout-flex--row-gap-16 hds-layout-flex--column-gap-16 provider-nav-tabs-row detail-page-tabs-row">
+      <div class="hds-tabs hds-tabs--size-medium" data-preview-tabs>
+        <div class="hds-tabs__tablist-wrapper">
+          <ul class="hds-tabs__tablist" role="tablist">
+            <li class="hds-tabs__tab" role="presentation">
+              <button class="hds-tabs__tab-button" role="tab" aria-selected="false" tabindex="-1" type="button">Overview</button>
+            </li>
+            <li class="hds-tabs__tab hds-tabs__tab--is-selected" role="presentation">
+              <button class="hds-tabs__tab-button" role="tab" aria-selected="true" type="button">Documentation</button>
+            </li>
+            <li class="hds-tabs__tab-indicator" role="presentation"></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

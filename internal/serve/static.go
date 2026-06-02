@@ -7,3 +7,6 @@ var serveJs string
 
 //go:embed menu.html.tmpl
 var menuTemplate string
+
+//go:embed header.html.tmpl
+var headerTemplate string

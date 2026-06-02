@@ -8,8 +8,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"github.com/adrg/frontmatter"
-	"github.com/hashicorp/terraform-plugin-docs/internal/provider"
+	"fmt"
 	"html/template"
 	"io"
 	"net/http"
@@ -19,7 +18,10 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 
+	"github.com/adrg/frontmatter"
+	"github.com/hashicorp/terraform-plugin-docs/internal/provider"
 	"golang.org/x/net/html"
 )
 
@@ -45,13 +47,15 @@ type Page struct {
 	Path              string `json:"path"`
 }
 
-func NewHandler(providerName string) http.Handler {
+func NewHandler(providerName, namespace, registryName string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		if r.RequestURI == "/tools/doc-preview" {
 			err = getDocPreviewPage(w)
 		} else if r.RequestURI == "/markdown/menu" {
 			err = getSidebarMenu(w, providerName)
+		} else if r.RequestURI == "/markdown/header" {
+			err = getHeader(w, namespace, registryName)
 		} else if strings.HasPrefix(r.RequestURI, "/markdown") {
 			err = getMarkdownContent(w, r.RequestURI, providerName)
 		} else {
@@ -239,6 +243,90 @@ func proxyRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rp.ServeHTTP(w, r)
+}
+
+// providerAPIResponse is the subset of fields we use from
+// https://registry.terraform.io/v1/providers/{namespace}/{name}
+type providerAPIResponse struct {
+	Namespace   string   `json:"namespace"`
+	Name        string   `json:"name"`
+	Version     string   `json:"version"`
+	Versions    []string `json:"versions"`
+	Source      string   `json:"source"`
+	PublishedAt string   `json:"published_at"`
+	Downloads   int      `json:"downloads"`
+	Tier        string   `json:"tier"`
+	LogoURL     string   `json:"logo_url"`
+}
+
+// HeaderData is the template context for header.html.tmpl.
+type HeaderData struct {
+	Namespace     string
+	Name          string
+	Version       string
+	VersionCount  int
+	Source        string
+	SourceDisplay string
+	PublishedAt   string
+	Downloads     int
+	LogoURL       string
+}
+
+var registryAPIClient = &http.Client{Timeout: 5 * time.Second}
+
+func getHeader(w http.ResponseWriter, namespace, name string) error {
+	if namespace == "" || name == "" {
+		w.WriteHeader(http.StatusNoContent)
+		return nil
+	}
+
+	resp, err := registryAPIClient.Get(
+		fmt.Sprintf("https://registry.terraform.io/v1/providers/%s/%s", namespace, name),
+	)
+	if err != nil || resp.StatusCode != http.StatusOK {
+		w.WriteHeader(http.StatusNoContent)
+		return nil
+	}
+	defer resp.Body.Close()
+
+	var api providerAPIResponse
+	if err := json.NewDecoder(resp.Body).Decode(&api); err != nil {
+		w.WriteHeader(http.StatusNoContent)
+		return nil
+	}
+
+	// Format published_at as "January 2, 2006"
+	published := ""
+	if api.PublishedAt != "" {
+		if t, err := time.Parse(time.RFC3339Nano, api.PublishedAt); err == nil {
+			published = t.Format("January 2, 2006")
+		}
+	}
+
+	// SourceDisplay: show "namespace/name" linked to the full source URL
+	sourceDisplay := ""
+	if api.Source != "" {
+		sourceDisplay = namespace + "/" + name
+	}
+
+	data := &HeaderData{
+		Namespace:     api.Namespace,
+		Name:          api.Name,
+		Version:       api.Version,
+		VersionCount:  len(api.Versions),
+		Source:        api.Source,
+		SourceDisplay: sourceDisplay,
+		PublishedAt:   published,
+		Downloads:     api.Downloads,
+		LogoURL:       api.LogoURL,
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	t, err := template.New("header").Parse(headerTemplate)
+	if err != nil {
+		return err
+	}
+	return t.Execute(w, data)
 }
 
 func getSidebarMenu(w http.ResponseWriter, providerName string) error {
